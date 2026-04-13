@@ -1,0 +1,115 @@
+.lobby {
+  display: grid;
+  gap: 20px;
+}
+
+.codeBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  text-align: center;
+}
+
+.codeLabel {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.code {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.copyBtn {
+  padding: 8px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.copyBtn:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.meta {
+  display: flex;
+  gap: 12px;
+}
+
+.metaItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.metaLabel {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metaValue {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.participants {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.participantsLabel {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.closeBtn {
+  padding: 14px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(242, 195, 122, 0.45);
+  background: linear-gradient(180deg, rgba(242, 195, 122, 0.25), rgba(242, 195, 122, 0.12));
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.closeBtn:hover {
+  background: linear-gradient(180deg, rgba(242, 195, 122, 0.35), rgba(242, 195, 122, 0.18));
+}
+
+.waiting {
+  font-size: 14px;
+  color: var(--muted);
+  text-align: center;
+  margin: 0;
+  padding: 12px;
+}

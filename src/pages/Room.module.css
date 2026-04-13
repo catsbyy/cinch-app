@@ -1,0 +1,108 @@
+.wrapper {
+  min-height: 100vh;
+  padding: 36px 16px;
+  display: grid;
+  place-items: start center;
+  position: relative;
+  z-index: 1;
+}
+
+.shell {
+  width: min(520px, 100%);
+  display: grid;
+  gap: 18px;
+  padding-top: 20px;
+}
+
+.header {
+  margin-bottom: 6px;
+}
+
+.kicker {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.prefsAction {
+  margin-top: 4px;
+}
+
+.prefsBtn {
+  width: 100%;
+  padding: 14px 22px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.prefsBtn:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+/* Loading & error states */
+.center {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.loader {
+  text-align: center;
+  padding: 26px 28px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  box-shadow: var(--shadow);
+}
+
+.loaderTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.errorBox {
+  text-align: center;
+  padding: 32px 28px;
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  display: grid;
+  gap: 10px;
+  max-width: 380px;
+}
+
+.errorTitle {
+  font-size: 18px;
+  font-weight: 650;
+}
+
+.errorHint {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.backBtn {
+  margin-top: 6px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.backBtn:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
