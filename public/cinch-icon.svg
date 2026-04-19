@@ -1,0 +1,54 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(512 360) rotate(90) scale(700 700)">
+      <stop offset="0%" stop-color="#112A72"/>
+      <stop offset="55%" stop-color="#08143A"/>
+      <stop offset="100%" stop-color="#040B22"/>
+    </radialGradient>
+
+    <linearGradient id="glassFill" x1="260" y1="300" x2="764" y2="724" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1B2348" stop-opacity="0.88"/>
+      <stop offset="100%" stop-color="#0E1531" stop-opacity="0.88"/>
+    </linearGradient>
+
+    <linearGradient id="goldStroke" x1="270" y1="300" x2="754" y2="724" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#E8C58A"/>
+      <stop offset="100%" stop-color="#B88A54"/>
+    </linearGradient>
+
+    <radialGradient id="centerGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(512 512) rotate(90) scale(180 180)">
+      <stop offset="0%" stop-color="#F1D4A2" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#F1D4A2" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="softBlur" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect x="40" y="40" width="944" height="944" rx="220" fill="url(#bgGlow)"/>
+
+  <!-- Soft center glow -->
+  <circle cx="512" cy="512" r="170" fill="url(#centerGlow)" filter="url(#softBlur)"/>
+
+  <!-- Left overlap form -->
+  <rect x="258" y="356" width="330" height="312" rx="156"
+        fill="url(#glassFill)"
+        stroke="url(#goldStroke)"
+        stroke-opacity="0.55"
+        stroke-width="20"/>
+
+  <!-- Right overlap form -->
+  <rect x="436" y="356" width="330" height="312" rx="156"
+        fill="url(#glassFill)"
+        stroke="url(#goldStroke)"
+        stroke-opacity="0.55"
+        stroke-width="20"/>
+
+  <!-- Play symbol -->
+  <path d="M480 438C480 425 494 417 505 424L604 484C615 491 615 507 604 514L505 574C494 581 480 573 480 560V438Z"
+        fill="#F1D4A2"/>
+</svg>
