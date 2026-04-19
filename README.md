@@ -48,7 +48,7 @@ Works solo too — skip the room and go straight to your picks.
 ### Setup
 
 ```bash
-git clone https://github.com/yourusername/cinch.git
+git clone https://github.com/catsbyy/cinch-app.git
 cd cinch
 npm install
 ```
