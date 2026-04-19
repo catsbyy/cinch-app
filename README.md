@@ -1,8 +1,18 @@
-# Cinch
+# <img src="./public/cinch-icon.svg" alt="" width="32" height="32" style="vertical-align:middle"> Cinch
 
 **Find a movie everyone actually wants to watch.**
 
+🔗 [cinch-vert.vercel.app](https://cinch-vert.vercel.app)
+
 Cinch is a group movie-matching web app. One person creates a room, shares the link, and everyone answers a few questions about their mood. Cinch finds films that work for the whole group — no arguing, no endless scrolling.
+
+---
+
+## Screenshots
+
+![Home screen](screenshots/home.png)
+![Preference form](screenshots/prefs.png)
+![Results screen](screenshots/results.png)
 
 ---
 
@@ -30,6 +40,7 @@ Works solo too — skip the room and go straight to your picks.
 ## Local development
 
 ### Prerequisites
+
 - Node.js 18+
 - A [Supabase](https://supabase.com) project
 - A [TMDB](https://www.themoviedb.org/settings/api) API key
@@ -98,6 +109,7 @@ npm run dev
 The app is deployed on [Vercel](https://vercel.com). A `vercel.json` file handles client-side routing so shared room links work correctly.
 
 To deploy your own instance:
+
 1. Push to GitHub
 2. Import the repo in Vercel
 3. Add the three environment variables in Vercel project settings
