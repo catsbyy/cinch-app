@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { supabase } from '../lib/supabase';
+import { isHost } from '../lib/storage';
 import { computeOverlap } from '../lib/overlap';
 import { getEnrichedMovies } from '../lib/tmdb';
 import { MovieCard } from '../components/MovieCard';
@@ -16,7 +17,10 @@ export default function Results() {
 
   const [movies, setMovies] = useState<EnrichedMovie[]>([]);
   const [prefs, setPrefs] = useState<UserPrefs | null>(null);
+  // true while host is computing or non-host is waiting for host
   const [loading, setLoading] = useState(true);
+  // true only while the host is actively calling TMDB (shows specific message)
+  const [computing, setComputing] = useState(false);
   const [reshuffling, setReshuffling] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const roomIdRef = useRef<string | null>(null);
@@ -37,7 +41,11 @@ export default function Results() {
         (payload) => {
           const updated = payload.new as { results?: RoomResults | null };
           if (updated.results) {
+            // Scroll all clients to top whenever results change (Bug 2)
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             applyResults(updated.results);
+            setLoading(false);
+            setComputing(false);
           }
         }
       )
@@ -53,7 +61,7 @@ export default function Results() {
       setError(null);
 
       try {
-        // Step 1: fetch room (including cached results)
+        // Step 1: fetch room, including any already-written results
         const { data: roomData, error: roomError } = await supabase
           .from('rooms')
           .select('id, results')
@@ -68,19 +76,32 @@ export default function Results() {
           return;
         }
 
-        const roomId = (roomData as { id: string; results: RoomResults | null }).id;
-        const cachedResults = (roomData as { id: string; results: RoomResults | null }).results;
+        const { id: roomId, results: cachedResults } = roomData as {
+          id: string;
+          results: RoomResults | null;
+        };
         roomIdRef.current = roomId;
 
-        // Step 2: if results already cached in DB, use them directly
+        // Step 2: results already in DB — display immediately, no TMDB call
         if (cachedResults) {
           applyResults(cachedResults);
           setLoading(false);
-          subscribeToRoom(roomId); // still subscribe so reshuffles from others arrive
+          subscribeToRoom(roomId); // stay subscribed for reshuffles
           return;
         }
 
-        // Step 3: fetch preferences
+        // Step 3: results not yet written — subscribe first so we don't miss the write
+        subscribeToRoom(roomId);
+
+        // Non-host: wait silently; the realtime handler will call applyResults + setLoading(false)
+        if (!isHost(code ?? '')) {
+          // intentionally leave loading = true — subscription resolves it
+          return;
+        }
+
+        // Host only: compute overlap → call TMDB → write to DB
+        setComputing(true);
+
         const { data: prefsData, error: prefsError } = await supabase
           .from('preferences')
           .select('*')
@@ -94,10 +115,10 @@ export default function Results() {
         if (prefsList.length === 0) {
           setError('No preferences submitted yet. Try going back to the room.');
           setLoading(false);
+          setComputing(false);
           return;
         }
 
-        // Step 4: compute overlap + call TMDB
         const userPrefs = computeOverlap(prefsList);
         const enriched = await getEnrichedMovies(userPrefs);
 
@@ -105,19 +126,27 @@ export default function Results() {
 
         const roomResults: RoomResults = { movies: enriched, prefs: userPrefs };
 
-        // Step 5: write to rooms.results — only if still null (first writer wins)
+        // Write to DB — the realtime subscription fires for all clients (including this one)
+        // and they all call applyResults + setLoading(false) there.
+        // Guard with .is('results', null) so a race between two hosts can't double-write.
         await supabase
           .from('rooms')
           .update({ results: roomResults })
           .eq('id', roomId)
           .is('results', null);
 
-        applyResults(roomResults);
-        subscribeToRoom(roomId);
+        // Apply locally in case the realtime event doesn't fire on the writer's own connection
+        if (!cancelled) {
+          applyResults(roomResults);
+          setLoading(false);
+          setComputing(false);
+        }
       } catch {
-        if (!cancelled) setError('Something went wrong. Please try again.');
-      } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) {
+          setError('Something went wrong. Please try again.');
+          setLoading(false);
+          setComputing(false);
+        }
       }
     }
 
@@ -139,16 +168,21 @@ export default function Results() {
     try {
       const enriched = await getEnrichedMovies(prefs);
       const roomResults: RoomResults = { movies: enriched, prefs };
-      // Write new results — this triggers the realtime subscription on all other clients
+      // Writing to DB triggers the realtime handler on all clients, which scrolls + renders
       await supabase
         .from('rooms')
         .update({ results: roomResults })
         .eq('id', roomIdRef.current);
+      // Apply locally in case realtime doesn't echo back to the writer
       setMovies(enriched);
     } finally {
       setReshuffling(false);
     }
   }
+
+  // Loading message varies by role
+  const loadingTitle = computing ? 'Finding your films…' : 'Waiting for results…';
+  const loadingHint = computing ? 'Let the mood settle.' : 'The host is picking your films.';
 
   return (
     <div className={styles.wrapper}>
@@ -163,8 +197,8 @@ export default function Results() {
               exit={{ opacity: 0 }}
             >
               <div className={styles.loader}>
-                <div className={styles.loaderTitle}>Finding your films…</div>
-                <div className={styles.loaderHint}>Let the mood settle.</div>
+                <div className={styles.loaderTitle}>{loadingTitle}</div>
+                <div className={styles.loaderHint}>{loadingHint}</div>
               </div>
             </motion.div>
           )}
@@ -203,7 +237,7 @@ export default function Results() {
                   </span>
                   {prefs && (
                     <span className={styles.prefPills}>
-                      {[prefs.feeling, prefs.pace, prefs.depth, prefs.era].map((v) => (
+                      {([prefs.feeling, prefs.pace, prefs.depth, prefs.era] as string[]).map((v) => (
                         <span key={v} className={styles.prefPill}>{v}</span>
                       ))}
                     </span>
