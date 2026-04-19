@@ -89,6 +89,9 @@ create table preferences (
 
 alter table rooms enable row level security;
 alter table preferences enable row level security;
+alter table preferences
+add constraint unique_participant_per_room
+unique (room_id, participant_id);
 
 create policy "allow all" on rooms for all using (true) with check (true);
 create policy "allow all" on preferences for all using (true) with check (true);

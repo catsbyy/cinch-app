@@ -102,6 +102,52 @@
   color: var(--muted);
 }
 
+.alreadyBox {
+  display: grid;
+  gap: 10px;
+  text-align: center;
+  padding: 36px 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid var(--border);
+  border-radius: 22px;
+}
+
+.alreadyIcon {
+  font-size: 28px;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.alreadyTitle {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -0.3px;
+}
+
+.alreadyHint {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.alreadyBtn {
+  margin-top: 6px;
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(242, 195, 122, 0.45);
+  background: linear-gradient(180deg, rgba(242, 195, 122, 0.20), rgba(242, 195, 122, 0.10));
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.alreadyBtn:hover {
+  background: linear-gradient(180deg, rgba(242, 195, 122, 0.30), rgba(242, 195, 122, 0.15));
+}
+
 @media (max-width: 600px) {
   .col4,
   .col6 {

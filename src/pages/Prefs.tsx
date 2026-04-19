@@ -24,16 +24,43 @@ export default function Prefs() {
   const [roomId, setRoomId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(true);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
 
   useEffect(() => {
-    supabase
-      .from('rooms')
-      .select('id')
-      .eq('code', code)
-      .single()
-      .then(({ data }) => {
-        if (data) setRoomId((data as { id: string }).id);
-      });
+    async function init() {
+      const participantId = getOrCreateParticipantId();
+
+      const { data: roomData } = await supabase
+        .from('rooms')
+        .select('id')
+        .eq('code', code)
+        .single();
+
+      if (!roomData) {
+        setChecking(false);
+        return;
+      }
+
+      const id = (roomData as { id: string }).id;
+      setRoomId(id);
+
+      // Check if this participant already submitted for this room
+      const { data: existing } = await supabase
+        .from('preferences')
+        .select('id')
+        .eq('room_id', id)
+        .eq('participant_id', participantId)
+        .maybeSingle();
+
+      if (existing) {
+        setAlreadySubmitted(true);
+      }
+
+      setChecking(false);
+    }
+
+    init();
   }, [code]);
 
   function advance() {
@@ -92,6 +119,41 @@ export default function Prefs() {
     center: { opacity: 1, x: 0, filter: 'blur(0px)' },
     exit: { opacity: 0, x: -40, filter: 'blur(4px)' },
   };
+
+  if (checking) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.shell} />
+      </div>
+    );
+  }
+
+  if (alreadySubmitted) {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.shell}>
+          <motion.div
+            className={styles.alreadyBox}
+            initial={{ opacity: 0, y: 14, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: 0.35, ease: 'easeOut' }}
+          >
+            <div className={styles.alreadyIcon}>✓</div>
+            <div className={styles.alreadyTitle}>You're all set</div>
+            <p className={styles.alreadyHint}>
+              You've already submitted your preferences for this room.
+            </p>
+            <button
+              className={styles.alreadyBtn}
+              onClick={() => navigate(`/room/${code}`)}
+            >
+              Back to lobby
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.wrapper}>
