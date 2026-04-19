@@ -3,6 +3,11 @@ export type Pace = 'slow' | 'balanced' | 'dynamic';
 export type Depth = 'light' | 'deep';
 export type Era = 'classic' | 'mid' | 'recent' | 'any';
 
+export interface RoomResults {
+  movies: EnrichedMovie[];
+  prefs: UserPrefs;
+}
+
 export interface Room {
   id: string;
   code: string;
@@ -10,6 +15,7 @@ export interface Room {
   status: 'waiting' | 'active' | 'closed';
   expires_at: string;
   created_at: string;
+  results: RoomResults | null;
 }
 
 export interface Preference {
